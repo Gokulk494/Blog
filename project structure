@@ -1,0 +1,21 @@
+src
+└── main
+    ├── java
+    │   └── src          # Java Package
+    │       └── blog     # Java Package
+    │           ├── BlogApplication.java    # Java Class
+    │           ├── controller              # Java Package
+    │           │   └── PostController.java # Java Class
+    │           ├── model                   # Java Package
+    │           │   └── Post.java           # Java Class
+    │           ├── repository              # Java Package
+    │           │   └── PostRepository.java # Java Class
+    │           └── service                 # Java Package
+    │               └── PostService.java    # Java Class
+    └── resources
+        ├── application.properties           # Configuration File
+        ├── static                           # Folder for static resources (CSS, JS, images, etc.)
+        └── templates                        # Folder for Thymeleaf templates
+            ├── index.html                   # Thymeleaf Template
+            ├── new-post.html                # Thymeleaf Template
+            └── edit-post.html               # Thymeleaf Template
