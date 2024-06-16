@@ -3,43 +3,54 @@ package com.example.blog.controller;
 import com.example.blog.model.Post;
 import com.example.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/posts")
+@Controller
+@RequestMapping("/posts")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
     @GetMapping
-    public List<Post> getAllPosts() {
-        return postService.getAllPosts();
+    public String getAllPosts(Model model) {
+        List<Post> posts = postService.getAllPosts();
+        model.addAttribute("posts", posts);
+        return "index";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        Optional<Post> post = postService.getPostById(id);
-        return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/new")
+    public String createPostForm(Model model) {
+        model.addAttribute("post", new Post());
+        return "new-post";
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postService.createPost(post);
+    public String createPost(@ModelAttribute Post post) {
+        postService.createPost(post);
+        return "redirect:/posts";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post postDetails) {
-        return ResponseEntity.ok(postService.updatePost(id, postDetails));
+    @GetMapping("/edit/{id}")
+    public String editPostForm(@PathVariable Long id, Model model) {
+        Post post = postService.getPostById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + id));
+        model.addAttribute("post", post);
+        return "edit-post";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    @PostMapping("/{id}")
+    public String updatePost(@PathVariable Long id, @ModelAttribute Post post) {
+        postService.updatePost(id, post);
+        return "redirect:/posts";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/posts";
     }
 }
